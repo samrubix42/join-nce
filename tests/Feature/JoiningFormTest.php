@@ -29,6 +29,43 @@ it('creates a join entry from the basic details', function () {
         ->and($joining->status)->toBe(JoiningStatus::PendingPayment);
 });
 
+it('normalizes valid indian mobile number formats', function (string $phoneNumber) {
+    Livewire::test(JoiningForm::class)
+        ->set('name', 'Asha Verma')
+        ->set('jnv_name', 'JNV Varanasi')
+        ->set('business_name', 'Comestro')
+        ->set('phone_number', $phoneNumber)
+        ->call('nextStep')
+        ->assertHasNoErrors()
+        ->assertSet('phone_number', '9876543210');
+
+    expect(Joining::firstOrFail()->personal_number)->toBe('9876543210');
+})->with([
+    'plain' => ['9876543210'],
+    'country code with plus' => ['+91 98765 43210'],
+    'country code with hyphen' => ['91-9876543210'],
+    'leading zero' => ['09876543210'],
+    'punctuation' => ['(98765) 43210'],
+]);
+
+it('rejects an invalid mobile number', function (string $phoneNumber) {
+    Livewire::test(JoiningForm::class)
+        ->set('name', 'Asha Verma')
+        ->set('jnv_name', 'JNV Varanasi')
+        ->set('business_name', 'Comestro')
+        ->set('phone_number', $phoneNumber)
+        ->call('nextStep')
+        ->assertHasErrors(['phone_number'])
+        ->assertSet('step', 1);
+
+    expect(Joining::count())->toBe(0);
+})->with([
+    'too short' => ['987654321'],
+    'starts with five' => ['5876543210'],
+    'contains letters' => ['98765abc10'],
+    'landline style' => ['0123456789'],
+]);
+
 it('moves to the details step after payment proof', function () {
     $joining = Joining::factory()->create();
 
@@ -63,7 +100,7 @@ it('saves the additional details after payment', function () {
         ->set('step', 3)
         ->set('email', 'asha@example.com')
         ->set('batch', '2005')
-        ->set('official_contact_number', '9876500000')
+        ->set('official_contact_number', '+91 98765 00000')
         ->set('address_city', 'Varanasi')
         ->set('business_name_city', 'Comestro, Varanasi')
         ->set('business_category', 'IT & Software')
@@ -97,6 +134,22 @@ it('validates the required additional details', function () {
         ->set('step', 3)
         ->call('submitDetails')
         ->assertHasErrors(['email', 'business_name_city', 'business_category', 'products_services'])
+        ->assertSet('step', 3);
+});
+
+it('rejects an invalid alternate contact number', function () {
+    $joining = Joining::factory()->create();
+
+    Livewire::test(JoiningForm::class)
+        ->set('joiningId', $joining->id)
+        ->set('step', 3)
+        ->set('email', 'asha@example.com')
+        ->set('official_contact_number', '12345')
+        ->set('business_name_city', 'Comestro, Varanasi')
+        ->set('business_category', 'IT & Software')
+        ->set('products_services', 'Software development')
+        ->call('submitDetails')
+        ->assertHasErrors(['official_contact_number'])
         ->assertSet('step', 3);
 });
 

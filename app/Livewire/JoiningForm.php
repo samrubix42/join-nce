@@ -53,11 +53,15 @@ class JoiningForm extends Component
     public function nextStep(): void
     {
         if ($this->step === 1) {
+            $this->phone_number = $this->normalizePhoneNumber($this->phone_number);
+
             $this->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'jnv_name' => ['required', 'string', 'max:255'],
                 'business_name' => ['required', 'string', 'max:255'],
-                'phone_number' => ['required', 'string', 'max:255'],
+                'phone_number' => ['required', 'string', 'regex:/^[6-9][0-9]{9}$/'],
+            ], [
+                'phone_number.regex' => 'Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.',
             ]);
 
             $joining = Joining::create([
@@ -117,10 +121,12 @@ class JoiningForm extends Component
             return;
         }
 
+        $this->official_contact_number = $this->normalizePhoneNumber($this->official_contact_number);
+
         $validated = $this->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
             'batch' => ['nullable', 'string', 'max:255'],
-            'official_contact_number' => ['nullable', 'string', 'max:255'],
+            'official_contact_number' => ['nullable', 'string', 'regex:/^[6-9][0-9]{9}$/'],
             'address_city' => ['nullable', 'string', 'max:255'],
             'business_name_city' => ['required', 'string', 'max:255'],
             'business_category' => ['required', 'string', 'max:255'],
@@ -128,6 +134,8 @@ class JoiningForm extends Component
             'products_services' => ['required', 'string', 'max:2000'],
             'willing_volunteer' => ['boolean'],
             'willing_sponsor' => ['boolean'],
+        ], [
+            'official_contact_number.regex' => 'Enter a valid 10-digit Indian mobile number or leave this field blank.',
         ]);
 
         $validated['batch'] = $validated['batch'] ?: null;
@@ -138,6 +146,25 @@ class JoiningForm extends Component
         Joining::findOrFail($this->joiningId)->update($validated);
 
         $this->step = 4;
+    }
+
+    private function normalizePhoneNumber(string $phoneNumber): string
+    {
+        $phoneNumber = preg_replace('/[\s\-().]/', '', trim($phoneNumber)) ?? '';
+
+        if (str_starts_with($phoneNumber, '+91')) {
+            $phoneNumber = substr($phoneNumber, 3);
+        } elseif (str_starts_with($phoneNumber, '0091')) {
+            $phoneNumber = substr($phoneNumber, 4);
+        } elseif (str_starts_with($phoneNumber, '91') && strlen($phoneNumber) === 12) {
+            $phoneNumber = substr($phoneNumber, 2);
+        }
+
+        if (str_starts_with($phoneNumber, '0') && strlen($phoneNumber) === 11) {
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+
+        return $phoneNumber;
     }
 
     public function render()

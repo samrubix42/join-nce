@@ -93,7 +93,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-900 mb-1.5 lg:mb-2">Phone Number <span class="text-red-500">*</span></label>
-                                    <input type="tel" wire:model="phone_number" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Enter your mobile number" required>
+                                    <input type="tel" wire:model="phone_number" inputmode="tel" autocomplete="tel" maxlength="18" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="10-digit mobile number" required>
                                     @error('phone_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                                 </div>
 
@@ -186,7 +186,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-900 mb-1.5">Alternate contact number</label>
-                                    <input type="tel" wire:model="official_contact_number" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Optional">
+                                    <input type="tel" wire:model="official_contact_number" inputmode="tel" autocomplete="tel" maxlength="18" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="10-digit mobile number (optional)">
                                     @error('official_contact_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                                 </div>
 
