@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\JoiningStatus;
 use App\Models\Joining;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,6 +19,7 @@ class JoiningFactory extends Factory
     public function definition(): array
     {
         return [
+            'name' => fake()->name(),
             'personal_number' => fake()->unique()->numerify('PN-#####'),
             'email' => fake()->unique()->safeEmail(),
             'jnv_name' => fake()->city(),
@@ -30,7 +32,22 @@ class JoiningFactory extends Factory
             'products_services' => fake()->sentence(),
             'willing_volunteer' => fake()->boolean(),
             'willing_sponsor' => fake()->boolean(),
-            'status' => 'pending_payment',
+            'status' => JoiningStatus::PendingPayment,
         ];
+    }
+
+    public function paymentSubmitted(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => JoiningStatus::PaymentSubmitted,
+            'upi_transaction_id' => fake()->bothify('UPI########'),
+        ]);
+    }
+
+    public function approved(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => JoiningStatus::Approved,
+        ]);
     }
 }

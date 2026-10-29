@@ -120,7 +120,7 @@
                                         </svg>
                                         <div class="ml-3">
                                             <p class="text-sm text-amber-800">
-                                                <strong>Payment Required:</strong> Your details have been saved. Pay ₹3000 via UPI.
+                                                <strong>Payment Required:</strong> Your basic details have been saved. Pay ₹3000 via UPI, then add the rest of your details.
                                             </p>
                                         </div>
                                     </div>
@@ -166,6 +166,91 @@
                                 </form>
                             </div>
                         @elseif ($step === 3)
+                            <div class="mb-6 lg:mb-8">
+                                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Additional Details</h2>
+                                <p class="text-gray-600">Add your Navodaya and business details to complete your registration.</p>
+                            </div>
+
+                            <form wire:submit.prevent="submitDetails" class="space-y-4 lg:space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Email address <span class="text-red-500">*</span></label>
+                                    <input type="email" wire:model="email" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="you@example.com" required>
+                                    @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Batch</label>
+                                    <input type="text" wire:model="batch" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="e.g. 2005">
+                                    @error('batch') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Alternate contact number</label>
+                                    <input type="tel" wire:model="official_contact_number" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Optional">
+                                    @error('official_contact_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">City</label>
+                                    <input type="text" wire:model="address_city" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Your city">
+                                    @error('address_city') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Business category <span class="text-red-500">*</span></label>
+                                    <select wire:model="business_category" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all" required>
+                                        <option value="">Select a category</option>
+                                        <option value="IT & Software">IT &amp; Software</option>
+                                        <option value="Trading">Trading</option>
+                                        <option value="Services">Services</option>
+                                        <option value="Manufacturing">Manufacturing</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Healthcare">Healthcare</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    @error('business_category') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Business name &amp; city <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="business_name_city" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Business name, city" required>
+                                    @error('business_name_city') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Website</label>
+                                    <input type="url" wire:model="website" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="https://yourbusiness.com">
+                                    @error('website') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900 mb-1.5">Products &amp; services <span class="text-red-500">*</span></label>
+                                    <textarea wire:model="products_services" rows="3" class="w-full px-4 py-2.5 lg:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#147cb5] focus:bg-white focus:border-transparent transition-all placeholder-gray-400" placeholder="Tell us what your business offers" required></textarea>
+                                    @error('products_services') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div class="space-y-3">
+                                    <label class="flex items-start gap-3">
+                                        <input type="checkbox" wire:model="willing_volunteer" class="mt-0.5 size-4 rounded border-gray-300 text-[#147cb5] focus:ring-[#147cb5]">
+                                        <span class="text-sm text-gray-700">I would like to volunteer for NCE initiatives.</span>
+                                    </label>
+
+                                    <label class="flex items-start gap-3">
+                                        <input type="checkbox" wire:model="willing_sponsor" class="mt-0.5 size-4 rounded border-gray-300 text-[#147cb5] focus:ring-[#147cb5]">
+                                        <span class="text-sm text-gray-700">I would like to sponsor NCE events or programmes.</span>
+                                    </label>
+                                </div>
+
+                                <div class="pt-2">
+                                    <button type="submit" class="w-full inline-flex items-center justify-center px-6 py-3 lg:py-3.5 bg-gradient-to-r from-[#147cb5] to-[#0f5a8a] text-white text-base font-semibold rounded-xl hover:from-[#0f5a8a] hover:to-[#0a4a6b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#147cb5] transition-all duration-200 shadow-lg hover:shadow-xl">
+                                        Complete Registration
+                                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        @elseif ($step === 4)
                             <div class="py-8 lg:py-12 text-center">
                                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
                                     <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +258,7 @@
                                     </svg>
                                 </div>
                                 <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Registration Submitted!</h2>
-                                <p class="text-gray-600 mb-8 max-w-sm mx-auto">Thank you for registering with NCE. Your payment proof has been submitted and will be reviewed soon.</p>
+                                <p class="text-gray-600 mb-8 max-w-sm mx-auto">Thank you for registering with NCE. Your details and payment proof have been submitted and will be reviewed soon.</p>
                                 <a href="/" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-[#147cb5] to-[#0f5a8a] text-white text-base font-semibold rounded-xl hover:from-[#0f5a8a] hover:to-[#0a4a6b] transition-all duration-200">
                                     Back to Home
                                 </a>

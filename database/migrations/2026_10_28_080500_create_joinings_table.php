@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('joinings', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('personal_number');
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('jnv_name');
-            $table->string('batch');
-            $table->string('official_contact_number');
-            $table->string('address_city');
-            $table->string('business_name_city');
-            $table->string('business_category');
+            $table->string('batch')->nullable();
+            $table->string('official_contact_number')->nullable();
+            $table->string('address_city')->nullable();
+            $table->string('business_name_city')->nullable();
+            $table->string('business_category')->nullable();
             $table->string('website')->nullable();
-            $table->text('products_services');
-            $table->boolean('willing_volunteer');
-            $table->boolean('willing_sponsor');
+            $table->text('products_services')->nullable();
+            $table->boolean('willing_volunteer')->default(false);
+            $table->boolean('willing_sponsor')->default(false);
             $table->string('status')->default('pending_payment');
             $table->string('upi_transaction_id')->nullable();
             $table->string('payment_screenshot')->nullable();

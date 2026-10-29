@@ -42,9 +42,9 @@ class JoiningForm extends Component
 
     public string $products_services = '';
 
-    public ?string $willing_volunteer = null;
+    public bool $willing_volunteer = false;
 
-    public ?string $willing_sponsor = null;
+    public bool $willing_sponsor = false;
 
     public $payment_screenshot = null;
 
@@ -61,21 +61,14 @@ class JoiningForm extends Component
             ]);
 
             $joining = Joining::create([
+                'name' => $this->name,
                 'personal_number' => $this->phone_number,
-                'email' => $this->email ?: $this->phone_number.'@temp.com',
                 'jnv_name' => $this->jnv_name,
-                'batch' => $this->batch ?: 'N/A',
-                'official_contact_number' => $this->official_contact_number ?: $this->phone_number,
-                'address_city' => $this->address_city ?: 'N/A',
-                'business_name_city' => $this->business_name ?: $this->business_name_city ?: 'N/A',
-                'business_category' => $this->business_category ?: 'N/A',
-                'website' => $this->website ?: null,
-                'products_services' => $this->products_services ?: 'N/A',
-                'willing_volunteer' => false,
-                'willing_sponsor' => false,
+                'business_name_city' => $this->business_name,
                 'status' => 'pending_payment',
             ]);
 
+            $this->business_name_city = $this->business_name;
             $this->joiningId = $joining->id;
             $this->step = 2;
 
@@ -116,6 +109,35 @@ class JoiningForm extends Component
         ]);
 
         $this->step = 3;
+    }
+
+    public function submitDetails(): void
+    {
+        if (! $this->joiningId) {
+            return;
+        }
+
+        $validated = $this->validate([
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'batch' => ['nullable', 'string', 'max:255'],
+            'official_contact_number' => ['nullable', 'string', 'max:255'],
+            'address_city' => ['nullable', 'string', 'max:255'],
+            'business_name_city' => ['required', 'string', 'max:255'],
+            'business_category' => ['required', 'string', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+            'products_services' => ['required', 'string', 'max:2000'],
+            'willing_volunteer' => ['boolean'],
+            'willing_sponsor' => ['boolean'],
+        ]);
+
+        $validated['batch'] = $validated['batch'] ?: null;
+        $validated['official_contact_number'] = $validated['official_contact_number'] ?: null;
+        $validated['address_city'] = $validated['address_city'] ?: null;
+        $validated['website'] = $validated['website'] ?: null;
+
+        Joining::findOrFail($this->joiningId)->update($validated);
+
+        $this->step = 4;
     }
 
     public function render()
